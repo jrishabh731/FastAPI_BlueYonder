@@ -9,3 +9,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: test_db
+
+  api_server:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./services/api/
+    container_name: api_server
+    ports:
+      - "80:80"
