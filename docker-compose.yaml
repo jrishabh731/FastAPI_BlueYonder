@@ -2,7 +2,10 @@ version: '3.4'
 services:
   mysql:
     restart: always
-    image: mysql
+    # image: mysql
+    build:
+      dockerfile: Dockerfile
+      context: ./database/mysql/
     container_name: mysql
     ports:
       - "3307:3306"
