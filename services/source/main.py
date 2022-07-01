@@ -1,7 +1,11 @@
 from fastapi import FastAPI, File, UploadFile
-import pandas as pd
-from io import StringIO
+from sqlalchemy.orm import Session
+
 import csv
+from source.models.EngineData import EngineInspection
+
+import models.EngineData
+
 
 app = FastAPI()
 
@@ -22,4 +26,12 @@ async def create_upload_file(file: UploadFile = File(...)):
     # print(results[0])
 
     return {"filename": file.filename, "data": len(data)}
+
+
+@app.post("/insert/")
+def write_sample(sample: EngineInspection):
+    db = Session()
+    print(db)
+    row = models.EngineData.EngineInspection(sample.id, sample.label)
+    return {"status": True}
 

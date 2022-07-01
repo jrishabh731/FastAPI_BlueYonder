@@ -1,7 +1,7 @@
 FROM python:3.9
-WORKDIR /code
-COPY . /code/
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+WORKDIR /by
+COPY . /by/
+RUN pip install --no-cache-dir --upgrade -r /by/requirements.txt
 #COPY ./app /code/app
 
 #CMD ["sleep", "1000000"]
