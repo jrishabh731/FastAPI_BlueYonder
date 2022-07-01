@@ -1,5 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
-
+import pandas as pd
+from io import StringIO
+import csv
 
 app = FastAPI()
 
@@ -10,7 +12,14 @@ def create_file(appointment_id):
 
 
 @app.post("/upload_data/")
-def create_upload_file(file: UploadFile):
-    return {"status": 200,
-            "filename": file.filename,
-            "data": file.read()}
+async def create_upload_file(file: UploadFile = File(...)):
+    data = await file.read()
+
+    str_data = str(data, 'utf-8')
+    print(str_data)
+    results = csv.DictReader(str_data)
+    # results = [row for row in results]
+    # print(results[0])
+
+    return {"filename": file.filename, "data": len(data)}
+
