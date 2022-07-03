@@ -1,37 +1,24 @@
-from fastapi import FastAPI, File, UploadFile
+
+
+from fastapi import FastAPI, status, UploadFile, File
+from source.config.db import Base, engine
+from source.models.EngineInspectionSchema import EngineInspectionData
 from sqlalchemy.orm import Session
+from source.schema.EnginePydantic import EngineInspectionSchema
+from source.handlers.engine_inspection import get_engine_inspection, post_engine_inspection
 
-import csv
-from source.models.EngineData import EngineInspection
+# Base.metadata.create_all(engine)
 
-import models.EngineData
-
-
+# Initialize app
 app = FastAPI()
 
 
-@app.get("/get_record/{appointment_id}")
-def create_file(appointment_id):
-    return {"ID": appointment_id}
+@app.get("/get_record", response_model=EngineInspectionSchema, status_code=200)
+def get_inspection_details(id: str):
+    return get_engine_inspection(f"aj_{id}")
 
 
-@app.post("/upload_data/")
-async def create_upload_file(file: UploadFile = File(...)):
+@app.post("/upload_file/", status_code=status.HTTP_200_OK)
+async def upload_file(file: UploadFile=File(default=None, media_type="multipart/form-data")):
     data = await file.read()
-
-    str_data = str(data, 'utf-8')
-    print(str_data)
-    results = csv.DictReader(str_data)
-    # results = [row for row in results]
-    # print(results[0])
-
-    return {"filename": file.filename, "data": len(data)}
-
-
-@app.post("/insert/")
-def write_sample(sample: EngineInspection):
-    db = Session()
-    print(db)
-    row = models.EngineData.EngineInspection(sample.id, sample.label)
-    return {"status": True}
-
+    return post_engine_inspection(data)

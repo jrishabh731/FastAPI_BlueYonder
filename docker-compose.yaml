@@ -2,22 +2,28 @@ version: '3.4'
 services:
   mysql:
     restart: always
-    # image: mysql
-    build:
-      dockerfile: Dockerfile
-      context: ./database/mysql/
+    image: mysql
     container_name: mysql
     ports:
       - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: test_db
-
+  postgres:
+    restart: always
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: postgres
+      POSTGRES_DB: test_db
+    ports:
+      - "5432:5432"
   api_server:
     restart: always
     build:
       dockerfile: Dockerfile
-      context: ./services/api/
+      context: ./services/
     container_name: api_server
     ports:
       - "80:80"

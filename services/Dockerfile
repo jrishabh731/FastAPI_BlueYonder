@@ -6,4 +6,3 @@ RUN pip install --no-cache-dir --upgrade -r /by/requirements.txt
 
 #CMD ["sleep", "1000000"]
 CMD ["uvicorn", "source.main:app", "--host", "0.0.0.0", "--port", "80"]
-uvicorn source.main:app --host 0.0.0.0 --port 80
