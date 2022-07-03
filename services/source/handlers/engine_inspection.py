@@ -2,10 +2,11 @@ import csv
 import datetime
 from io import StringIO
 
-from source.config.db import get_db_session
+# from source.config.db import get_db_session
 from source.models.EngineInspectionSchema import EngineInspectionData
 from source.schema.EnginePydantic import EngineInspectionSchema
 from sqlalchemy.orm import Session
+from source.config.db import engine
 
 
 def get_engine_inspection(id):
@@ -14,8 +15,8 @@ def get_engine_inspection(id):
         record = []
         SessionLocal = get_db_session()
         import pdb
-        # pdb.set_trace()
-        with Session() as session:
+        pdb.set_trace()
+        with Session(bind=engine, expire_on_commit=False) as session:
             print(f"session local is created, inside context manager")
             record = session.query(EngineInspectionData).get(id)
             if record is None:
@@ -50,7 +51,6 @@ def post_engine_inspection(filedata):
             res["inspectionStartTime"] = res.pop("inspection time", "").split(" ")[-1]
             try:
                 obj = EngineInspectionSchema(**res)
-
             except Exception as err:
                 error_resp = {
                     "error": str(err),
@@ -71,8 +71,8 @@ def post_engine_inspection(filedata):
         SessionLocal = get_db_session()
         print(f"Keys : {list(appointment_obj.keys())}")
         import pdb
-        # pdb.set_trace()
-        with SessionLocal() as session:
+        pdb.set_trace()
+        with Session(bind=engine, expire_on_commit=False) as session:
             print(dir(session))
             records = session.query(EngineInspectionData) \
                 .with_entities(EngineInspectionData.appointmentId) \
@@ -92,7 +92,7 @@ def post_engine_inspection(filedata):
                 print(f"Exception: {err}")
         if appointment_obj:
             SessionLocal = get_db_session()
-            with SessionLocal() as session:
+            with Session(bind=engine, expire_on_commit=False) as session:
                 session.add_all(appointment_obj.values())
                 try:
                     session.commit()

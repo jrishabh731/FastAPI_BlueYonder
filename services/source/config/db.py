@@ -4,11 +4,9 @@ from sqlalchemy.orm import sessionmaker
 
 
 engine = create_engine("postgresql://postgres:root@10.61.21.144:5432/test_db")
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
-
-
-def get_db_session():
-    return sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 
 # engine = create_engine("postgresql://postgres:root@10.61.21.144:5432/test_db")
