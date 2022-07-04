@@ -1,6 +1,5 @@
 import json
 
-from main import app
 from handlers.engine_inspection import EngineInspection
 from unittest.mock import Mock
 
@@ -30,10 +29,12 @@ def test_get_engine_inspection():
     results = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert results == {"record": []}
 
-    import pdb
-    pdb.set_trace()
-    with open(r"testdata\valid_data.json") as fd:
+    with open(r"/by/unittest/testdata/valid_data.json") as fd:
         data = json.load(fd)
     get_results = data
     test = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert test == {"record": data}
+
+
+def test_post_engine_inspection():
+    pass

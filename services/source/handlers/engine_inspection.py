@@ -46,13 +46,8 @@ class EngineInspection:
             }
         }
         try:
-            # results = csv.DictReader(StringIO(str(filedata, 'utf-8-sig')), delimiter=',')
             appointment_obj = {}
-            cnt = 0
             for result in filedata:
-                if cnt == 10000:
-                    break
-                cnt += 1
                 res = dict(result)
                 res["inspectionDate"] = res.pop("inspection date", None)
                 res["inspectionStartTime"] = res.pop("inspection time", "")
