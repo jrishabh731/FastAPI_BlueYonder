@@ -1,7 +1,7 @@
-from source.models.EngineInspectionSchema import EngineInspectionData
-from source.schema.EnginePydantic import EngineInspectionSchema
+from models.EngineInspectionSchema import EngineInspectionData
+from schema.EnginePydantic import EngineInspectionSchema
 from sqlalchemy.orm import Session
-from source.config.db import engine
+from config.db import engine
 from fastapi import status, HTTPException
 
 

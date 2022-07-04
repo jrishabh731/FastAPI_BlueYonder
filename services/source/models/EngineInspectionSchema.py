@@ -1,4 +1,4 @@
-from source.config.db import Base
+from config.db import Base
 from sqlalchemy import Column, Integer, String, SMALLINT, Float, Enum, Date
 import enum
 

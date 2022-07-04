@@ -1,7 +1,7 @@
 import json
 
-from source.main import app
-from source.handlers.engine_inspection import EngineInspection
+from main import app
+from handlers.engine_inspection import EngineInspection
 from unittest.mock import Mock
 
 get_results = []

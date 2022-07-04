@@ -1,8 +1,8 @@
 from fastapi import FastAPI, status, UploadFile, File
-from source.config.db import Base, engine
-from source.handlers.engine_inspection import EngineInspection
+from config.db import Base, engine
+from handlers.engine_inspection import EngineInspection
 
-from source.utils import Utils
+from utils import Utils
 Base.metadata.create_all(engine)
 
 app = FastAPI()
