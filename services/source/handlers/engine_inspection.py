@@ -25,7 +25,7 @@ class EngineInspection:
         return {"record": record}
 
     @staticmethod
-    def get_all_records_with_filter(self, table, filter_stmt):
+    def get_all_records_with_filter(table, filter_stmt):
         try:
             with Session(bind=engine, expire_on_commit=False) as session:
                 return session.query(table) \
@@ -76,8 +76,7 @@ class EngineInspection:
                         continue
                     appointment_obj[obj.appointmentId] = EngineInspectionData(**res)
 
-            records = self.get_all_records_with_filter(EngineInspectionData,
-                                                  EngineInspectionData.appointmentId.in_(list(appointment_obj.keys())))
+            records = self.get_all_records_with_filter(EngineInspectionData, EngineInspectionData.appointmentId.in_(list(appointment_obj.keys())))
 
             for record in records:
                 try:
