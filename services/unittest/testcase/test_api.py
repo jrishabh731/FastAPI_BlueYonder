@@ -1,0 +1,39 @@
+import json
+
+from source.main import app
+from source.handlers.engine_inspection import EngineInspection
+from unittest.mock import Mock
+
+get_results = []
+
+
+class SessionMocker:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def query(self, *args, **kwargs):
+        return self
+
+    def get(self, *args, **kwargs):
+        return get_results
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+
+def test_get_engine_inspection():
+    global get_results
+    get_results = []
+    results = EngineInspection(SessionMocker).get_engine_inspection("123")
+    assert results == {"record": []}
+
+    import pdb
+    pdb.set_trace()
+    with open(r"testdata\valid_data.json") as fd:
+        data = json.load(fd)
+    get_results = data
+    test = EngineInspection(SessionMocker).get_engine_inspection("123")
+    assert test == {"record": data}

@@ -1,20 +1,12 @@
 from source.config.db import Base
-from sqlalchemy import Column, Integer, String, DateTime, SMALLINT, DATE, Float
+from sqlalchemy import Column, Integer, String, SMALLINT, Float, Enum, Date
 import enum
-
-
-
-class FuelTypeEnum(enum.Enum):
-    Petrol = 0
-    Diesel = 1
-    # Petrol + Diesel = 2
 
 
 class EngineInspectionData(Base):
     __tablename__ = "engine_inspection"
-
     appointmentId = Column(String(255), primary_key=True, index=True)
-    inspectionDate = Column(String(255))
+    inspectionDate = Column(Date)
     inspectionStartTime = Column(String(255))
     year = Column(SMALLINT)
     month = Column(SMALLINT)
@@ -85,6 +77,5 @@ class EngineInspectionData(Base):
     engineTransmission_comments_value_3 = Column(String(255), nullable=True)
     engineTransmission_comments_value_4 = Column(String(255), nullable=True)
     fuel_type = Column(String(255))
-    # fuel_type = Column("fuel_type", ENUM('Petrol', 'Diesel', 'Petrol + CNG'))
     odometer_reading = Column(Integer)
     rating_engineTransmission = Column(Float)

@@ -1,6 +1,15 @@
-from pydantic import BaseModel, Field
-from datetime import date
+import enum
+import re
 
+from pydantic import BaseModel, Field, validator, conint
+from datetime import datetime, date
+from pydantic.datetime_parse import parse_date, get_numeric
+
+
+class FuelTypeEnum(enum.Enum):
+    Petrol = "Petrol"
+    Diesel = "Diesel"
+    PC = "Petrol + CNG"
 
 
 class EngineInspectionSchema(BaseModel):
@@ -8,7 +17,7 @@ class EngineInspectionSchema(BaseModel):
     inspectionDate: str
     inspectionStartTime: str
     year: int
-    month: int
+    month: conint(gt=0, lt=13)
     engineTransmission_battery_value: str
     engineTransmission_battery_cc_value_0: str
     engineTransmission_battery_cc_value_1: str
@@ -75,14 +84,25 @@ class EngineInspectionSchema(BaseModel):
     engineTransmission_comments_value_2: str
     engineTransmission_comments_value_3: str
     engineTransmission_comments_value_4: str
-    fuel_type: str
+    fuel_type: FuelTypeEnum
     odometer_reading: int
     rating_engineTransmission: float
 
     def __repr__(self):
         return f"AppointmentID: {self.appointmentId}"
 
+    @validator("inspectionDate")
+    def date_to_mdy_format(cls, value):
+        value = datetime.strptime(
+                value,
+                "%d-%m-%Y"
+            ).strftime("%m-%d-%Y")
+        return value
 
-# class EngineInspectionResponse(BaseModel):
-#     duplicates: list[str]
-#     schema_failures: list[dict]
+    @validator("inspectionStartTime")
+    def validate_inspection_starttime(cls, value):
+        value = value.split(" ")[-1]
+        result = re.match("^([01]?[0-9]|2[0-3]):[0-5][0-9]$", value)
+        if result is None:
+            raise ValueError(f"inspectionStartTime : {value} doesn't match 24hr time format")
+        return value
