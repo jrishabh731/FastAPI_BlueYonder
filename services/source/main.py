@@ -1,3 +1,5 @@
+import logging
+import logger
 from fastapi import FastAPI, status, UploadFile, File
 from config.db import Base, engine
 from handlers.engine_inspection import EngineInspection
@@ -5,11 +7,14 @@ from handlers.engine_inspection import EngineInspection
 from utils import Utils
 Base.metadata.create_all(engine)
 
+log = logging.getLogger("API_LOG")
+print(log.handlers)
 app = FastAPI()
 
 
 @app.get("/get_record", status_code=200)
 def get_inspection_details(id: str):
+    log.info(f"Received get requests for Appointment ID : {id}")
     return EngineInspection().get_engine_inspection(f"aj_{id}")
 
 

@@ -1,8 +1,12 @@
+import logging
+
 from models.EngineInspectionSchema import EngineInspectionData
 from schema.EnginePydantic import EngineInspectionSchema
 from sqlalchemy.orm import Session
 from config.db import engine
 from fastapi import status, HTTPException
+
+log = logging.getLogger("API_LOG")
 
 
 class EngineInspection:
@@ -16,17 +20,19 @@ class EngineInspection:
         :return:
         """
         record = []
+
         try:
             with self.session(bind=engine, expire_on_commit=False) as session:
                 record = session.query(EngineInspectionData).get(id)
                 if record is None:
                     record = []
         except Exception as err:
-            print(f"Error occured: {err}")
+            log.error(f"Error occured: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Exception occured : {err}",
             ) from err
+        log.info("Processed get request, returning response")
         return {"record": record}
 
     @staticmethod
