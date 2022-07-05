@@ -28,3 +28,4 @@ services:
       - postgres
     volumes:
       - /by/logs:/by/logs
+      - ./postgres-data:/var/lib/postgresql/data
