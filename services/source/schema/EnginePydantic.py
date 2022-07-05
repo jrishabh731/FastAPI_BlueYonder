@@ -1,9 +1,8 @@
 import enum
 import re
 
-from pydantic import BaseModel, Field, validator, conint
-from datetime import datetime, date
-from pydantic.datetime_parse import parse_date, get_numeric
+from pydantic import BaseModel, validator, conint
+from datetime import datetime
 
 
 class FuelTypeEnum(enum.Enum):

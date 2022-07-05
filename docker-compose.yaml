@@ -13,10 +13,6 @@ services:
     restart: always
     image: postgres
     container_name: postgres
-    environment:
-      POSTGRES_PASSWORD: root
-      POSTGRES_USER: postgres
-      POSTGRES_DB: test_db
     ports:
       - "5432:5432"
   api_server:
@@ -25,5 +21,11 @@ services:
       dockerfile: Dockerfile
       context: ./services/
     container_name: api_server
+    environment:
+      DB_PASSWORD: "root"
+      DB_USER: "postgres"
+      POSTGRES_DB: "test_db"
+      DB_PORT: "5432"
+      DB_HOST: "10.61.21.144"
     ports:
       - "80:80"
