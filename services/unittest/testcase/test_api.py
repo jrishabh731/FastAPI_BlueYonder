@@ -1,6 +1,6 @@
 import json
 import sys
-sys.path.append("/by/unittest/")
+sys.path.append("/by/source/")
 print(sys.path)
 from handlers.engine_inspection import EngineInspection
 from unittest.mock import Mock
