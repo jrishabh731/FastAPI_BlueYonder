@@ -32,17 +32,24 @@ class EngineInspection:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Exception occured : {err}",
             ) from err
-        log.info("Processed get request, returning response")
+        log.info(f"Processed get request for {id}, returning response.")
         return {"record": record}
 
     @staticmethod
     def get_all_records_with_filter(table, filter_stmt):
+        """
+        Returns record for engine_inspection table with given filter statement
+        :param table: Schema table object
+        :param filter_stmt: filter stmt for returning records
+        :return:
+        """
         try:
             with Session(bind=engine, expire_on_commit=False) as session:
                 return session.query(table) \
                     .with_entities(EngineInspectionData.appointmentId) \
                     .filter(filter_stmt)
         except Exception as err:
+            log.error(f"Exception found while executing db query: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Exception occured : {err}",
@@ -66,6 +73,7 @@ class EngineInspection:
         try:
             obj = EngineInspectionSchema(**record)
         except Exception as err:
+            log.error(f"Issue while creating pydantic schema: {err}")
             error_resp = {
                 "error": str(err),
                 "appointmentId": record["appointmentId"],
@@ -74,7 +82,7 @@ class EngineInspection:
             error_response["schema_validations"].append(error_resp)
         else:
             if obj.appointmentId in filtered_records:
-                print(f'{obj.appointmentId} is duplicate in the current file, ignoring it.')
+                log.info(f'{obj.appointmentId} is duplicate in the current file, ignoring it.')
                 error_resp = {
                     "message": f'{obj.appointmentId} is duplicate in the file',
                     "appointmentId": record["appointmentId"],
@@ -104,7 +112,7 @@ class EngineInspection:
                     }
                     error_response["duplicate_records"].append(error_resp)
             except Exception as err:
-                print(f"Exception: {err}")
+                log.error(f"Exception: {err}")
 
     def post_engine_inspection(self, filedata):
         """
@@ -142,13 +150,14 @@ class EngineInspection:
                         session.commit()
                         error_response["metadata"]["inserted_records"] = len(filtered_records)
                     except Exception as err:
+                        log.error(f"Exception occured: {err}")
                         raise HTTPException(
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail=f"Exception occured : {err}",
                         ) from err
 
         except Exception as err:
-            print(f"Error occured: {err}")
+            log.error(f"Exception occured: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Exception occured : {err}",
