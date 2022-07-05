@@ -1,9 +1,9 @@
 import json
 import sys
+
 sys.path.append("/by/source/")
 print(sys.path)
 from handlers.engine_inspection import EngineInspection
-from unittest.mock import Mock
 
 get_results = []
 
@@ -36,7 +36,6 @@ def test_get_engine_inspection():
     get_results = data
     test = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert test == {"record": data}
-
 
 
 def test_post_engine_inspection():

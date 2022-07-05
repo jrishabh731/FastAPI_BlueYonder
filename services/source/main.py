@@ -14,7 +14,7 @@ def get_inspection_details(id: str):
 
 
 @app.post("/upload_file/", status_code=status.HTTP_200_OK)
-async def upload_file(file: UploadFile=File(default=None, media_type="multipart/form-data")):
+async def upload_file(file: UploadFile = File(default=None, media_type="multipart/form-data")):
     data = await file.read()
     data = Utils.csv_to_dict(data)
     return EngineInspection().post_engine_inspection(data)
