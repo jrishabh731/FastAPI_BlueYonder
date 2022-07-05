@@ -17,15 +17,17 @@ log = logging.getLogger("API_LOG")
 def initialize_engine():
     while True:
         try:
-            engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}:{port}/{database}")
-            session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-            return engine, session_local
+            # session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+            return create_engine(
+                f"postgresql://{db_user}:{db_password}@{db_host}:{port}/{database}"
+            )
+
         except Exception as err:
             log.error(f"Exception occured while connecting to db: {err}")
         time.sleep(10)
 
 
-engine, SessionLocal = initialize_engine()
+engine = initialize_engine()
 
 Base = declarative_base()
 
