@@ -4,7 +4,6 @@ import time
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")

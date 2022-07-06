@@ -8,7 +8,6 @@ from utils import Utils
 Base.metadata.create_all(engine)
 
 log = logging.getLogger("API_LOG")
-print(log.handlers)
 app = FastAPI()
 
 
