@@ -31,6 +31,8 @@ def test_get_engine_inspection():
     get_results = []
     session_mocker = Mock()
     session_mocker.get = Mock(return_value=get_results)
+    session_mocker.__enter__ = Mock()
+    session_mocker.__exit__ = Mock()
     results = EngineInspection(session_mocker).get_engine_inspection("123")
     assert results == {"record": []}
 
