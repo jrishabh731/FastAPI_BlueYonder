@@ -1,4 +1,5 @@
 import logging
+import time
 
 from models.EngineInspectionSchema import EngineInspectionData
 from schema.EnginePydantic import EngineInspectionSchema
@@ -99,6 +100,7 @@ class EngineInspection:
         :return:
         """
         # Calls function to get records which match the give filter
+        start_time = time.time()
         records = self.get_all_records_with_filter(
             EngineInspectionData, EngineInspectionData.appointmentId.in_(list(filtered_records.keys()))
         )
@@ -113,6 +115,7 @@ class EngineInspection:
                     error_response["duplicate_records"].append(error_resp)
             except Exception as err:
                 log.error(f"Exception: {err}")
+        log.info(f"Removed already existing records in {round(time.time() - start_time, 2)}sec.")
 
     def post_engine_inspection(self, filedata):
         """
@@ -138,12 +141,16 @@ class EngineInspection:
         }
         try:
             filtered_records = {}
+
+            start_time = time.time()
             for result in filedata:
                 self.validate_schema_and_deduplicate(dict(result), filtered_records, error_response)
+            log.info(f"Schema validated and deduplicated records in {round(time.time()-start_time,2)}sec.")
 
             self.drop_already_existing_records(filtered_records, error_response)
 
             if filtered_records:
+                start_time = time.time()
                 with self.session(bind=engine, expire_on_commit=False) as session:
                     session.add_all(filtered_records.values())
                     try:
@@ -155,6 +162,7 @@ class EngineInspection:
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail=f"Exception occured : {err}",
                         ) from err
+                log.info(f"Inserted {len(filtered_records)} records in {round(time.time() - start_time, 2)}sec.")
 
         except Exception as err:
             log.error(f"Exception occured: {err}")
