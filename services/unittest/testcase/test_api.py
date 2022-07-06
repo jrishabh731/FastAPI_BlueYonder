@@ -1,5 +1,6 @@
 import json
 import sys
+from unittest.mock import Mock
 
 sys.path.append("/by/source/")
 print(sys.path)
@@ -28,12 +29,15 @@ class SessionMocker:
 def test_get_engine_inspection():
     global get_results
     get_results = []
+    session_mocker = Mock()
+    session_mocker.get = Mock(return_value=get_results)
     results = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert results == {"record": []}
 
     with open(r"/by/unittest/testdata/valid_data.json") as fd:
         data = json.load(fd)
-    get_results = data
+    session_mocker = Mock()
+    session_mocker.get = Mock(return_value=data)
     test = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert test == {"record": data}
 
