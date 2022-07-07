@@ -11,14 +11,21 @@ log = logging.getLogger("API_LOG")
 
 
 class EngineInspection:
+    """
+    This class should hold functions to perform the CRUD operations on engine_inspection table.
+    For usecases like, some other flow needs the engine inspection details for a
+    particular idea it can call this fucntion and get the relevant data.
+    Similarly all functions should be built in a similar design.
+    """
     def __init__(self, session=None):
+        # Added session object for easier unittesting.
         self.session = session or Session
 
     def get_engine_inspection(self, id):
         """
-
+        Return the record with id if it exists. Otherwise simply retunr []
         :param id:
-        :return:
+        :return: [{}] or []
         """
         record = []
 
@@ -33,7 +40,7 @@ class EngineInspection:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Exception occured : {err}",
             ) from err
-        log.info(f"Processed get request for {id}, returning response.")
+        log.debug(f"Processed get request for {id}, returning response.")
         return {"record": record}
 
     @staticmethod
@@ -42,7 +49,7 @@ class EngineInspection:
         Returns record for engine_inspection table with given filter statement
         :param table: Schema table object
         :param filter_stmt: filter stmt for returning records
-        :return:
+        :return: None
         """
         try:
             with Session(bind=engine, expire_on_commit=False) as session:
@@ -68,7 +75,7 @@ class EngineInspection:
         :param filtered_records: Updates filtered records with a new key and value
                                  key: appointmentID and value the converted schema
         """
-        # As these columns have
+        # As these columns have space in their name we have to transform it.
         record["inspectionDate"] = record.pop("inspection date", None)
         record["inspectionStartTime"] = record.pop("inspection time", "")
         try:
@@ -90,13 +97,15 @@ class EngineInspection:
                 }
                 error_response["duplicate_records"].append(error_resp)
                 return
-            filtered_records.update({obj.appointmentId: EngineInspectionData(**record)})
+            filtered_records.update({obj.appointmentId: EngineInspectionData(**obj.dict())})
 
     def drop_already_existing_records(self, filtered_records, error_response):
         """
-
-        :param filtered_records:
-        :param error_response:
+        We have to filter the records from current batch which are already presnt in DB.
+        Thus we get all the available records from the current batch of appointmentID
+        and filter records.
+        :param filtered_records: Records are removed inplace.
+        :param error_response: Response is added inplace
         :return:
         """
         # Calls function to get records which match the give filter

@@ -1,7 +1,7 @@
 import enum
 import re
 
-from pydantic import BaseModel, validator, conint
+from pydantic import BaseModel, validator, conint, constr
 from datetime import datetime
 
 
@@ -13,7 +13,7 @@ class FuelTypeEnum(enum.Enum):
 
 class EngineInspectionSchema(BaseModel):
     appointmentId: str
-    inspectionDate: str
+    inspectionDate: constr(strip_whitespace=True, min_length=10, max_length=10)
     inspectionStartTime: str
     year: int
     month: conint(gt=0, lt=13)
@@ -83,19 +83,25 @@ class EngineInspectionSchema(BaseModel):
     engineTransmission_comments_value_2: str
     engineTransmission_comments_value_3: str
     engineTransmission_comments_value_4: str
-    fuel_type: FuelTypeEnum
+    fuel_type: str
     odometer_reading: int
     rating_engineTransmission: float
 
     def __repr__(self):
         return f"AppointmentID: {self.appointmentId}"
 
-    @validator("inspectionDate")
+    @validator("inspectionDate", pre=True)
     def date_to_mdy_format(cls, value):
-        value = datetime.strptime(
-                value,
-                "%d-%m-%Y"
-            ).strftime("%m-%d-%Y")
+        try:
+            value = datetime.strptime(
+                    value,
+                    "%d-%m-%Y"
+                ).strftime("%Y-%m-%d")
+        except ValueError as err:
+            raise ValueError(
+                f"inspectionDate : {value} doesn't match %d-%m-%Y time format"
+            ) from err
+
         return value
 
     @validator("inspectionStartTime")

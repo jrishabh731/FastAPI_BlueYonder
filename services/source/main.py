@@ -1,5 +1,8 @@
-import logging
+"""
+This file will hold the endpoints and there respective handlers.
+"""
 import logger
+import logging
 from fastapi import FastAPI, status, UploadFile, File
 from config.db import Base, engine
 from handlers.engine_inspection import EngineInspection
