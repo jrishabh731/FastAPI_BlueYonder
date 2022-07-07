@@ -1,6 +1,5 @@
 import json
 import sys
-from unittest.mock import Mock
 
 sys.path.append("/by/source/")
 print(sys.path)
