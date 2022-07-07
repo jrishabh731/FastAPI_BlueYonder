@@ -21,7 +21,7 @@ services:
       DB_USER: "postgres"
       POSTGRES_DB: "test_db"
       DB_PORT: "5432"
-      DB_HOST: "localhost"
+      DB_HOST: "postgres"
     ports:
       - "80:80"
     depends_on:
