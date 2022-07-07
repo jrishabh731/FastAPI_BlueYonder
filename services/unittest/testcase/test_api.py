@@ -1,9 +1,11 @@
 import json
 import sys
+from unittest.mock import Mock
 
 sys.path.append("/by/source/")
 print(sys.path)
 from handlers.engine_inspection import EngineInspection
+from schema.EnginePydantic import EngineInspectionSchema
 
 get_results = []
 
@@ -39,4 +41,10 @@ def test_get_engine_inspection():
 
 
 def test_post_engine_inspection():
-    pass
+    # When schema is valid
+    with open(r"/by/unittest/testdata/valid_post_data.json") as fd:
+        full_data = json.load(fd)
+    obj = EngineInspection(SessionMocker)
+    obj.get_all_records_with_filter = Mock(return_value=[])
+    results = obj.post_engine_inspection(full_data["valid_scenario"]["input"])
+    assert results == full_data["valid_scenario"]["output"]
