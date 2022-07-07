@@ -34,6 +34,7 @@ def test_get_engine_inspection():
 
     with open(r"/by/unittest/testdata/valid_data.json") as fd:
         data = json.load(fd)
+    get_results = data
     results = EngineInspection(SessionMocker).get_engine_inspection("123")
     assert results == {"record": data}
 
