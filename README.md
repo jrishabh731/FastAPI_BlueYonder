@@ -53,6 +53,11 @@ Available inside root folder.
 4. Duplicate data removed from the current file
 5. Remove already existing data from the DB to avoid primary key issues.
 
+#### Schema valdiations
+1. inspectionDate is in req format
+2. start time follows 24hr format. 
+3. month, 0<month<13
+
 Sample results:
  --- ---
 1. GET request for available record:
@@ -72,3 +77,11 @@ Logs:
 --- ---
 4. For already existing records
 ![img_3.png](img_3.png)
+
+5. For 26k records
+![image](https://user-images.githubusercontent.com/42139430/177812581-f118f3ef-8f39-4946-8625-4f329e22d544.png)
+
+
+Further improvements:
+1. Seperating sql from ORM to init script in database.
+2. Adding more validations to the input body.
